@@ -27,7 +27,21 @@ const httpServer = createServer(app);
 // Socket.io setup
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      const allowed = [
+        process.env.CLIENT_URL || 'http://localhost:5173',
+        'http://localhost:5173',
+        'http://172.30.104.184:5173',
+        /^http:\/\/192\.168\.\d+\.\d+:\d+$/,
+        /^http:\/\/172\.\d+\.\d+\.\d+:\d+$/,
+        /^http:\/\/10\.\d+\.\d+\.\d+:\d+$/,
+      ];
+      const ok = allowed.some((o) =>
+        typeof o === 'string' ? o === origin : o.test(origin)
+      );
+      callback(null, ok ? origin : false);
+    },
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -56,8 +70,25 @@ io.on('connection', (socket) => {
 
 // Security middleware
 app.use(helmet({ crossOriginResourcePolicy: false }));
+
+const allowedOrigins = [
+  process.env.CLIENT_URL || 'http://localhost:5173',
+  'http://localhost:5173',
+  'http://172.30.104.184:5173',
+  /^http:\/\/192\.168\.\d+\.\d+:\d+$/,
+  /^http:\/\/172\.\d+\.\d+\.\d+:\d+$/,
+  /^http:\/\/10\.\d+\.\d+\.\d+:\d+$/,
+];
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    // allow no-origin requests (mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    const allowed = allowedOrigins.some((o) =>
+      typeof o === 'string' ? o === origin : o.test(origin)
+    );
+    callback(null, allowed ? origin : false);
+  },
   credentials: true,
 }));
 
