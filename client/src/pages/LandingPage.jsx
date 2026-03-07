@@ -97,13 +97,13 @@ const LandingPage = () => {
               <p className="mt-5 text-lg text-gray-300 max-w-lg leading-relaxed mx-auto lg:mx-0">
                 UrbanEye empowers citizens to report municipal issues, enables officers to manage them efficiently, and uses AI to ensure transparent resolution.
               </p>
-              <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-3 mt-8">
-                <Link to="/register" className="btn-primary text-base py-3 px-6 justify-center">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center lg:items-start justify-center lg:justify-start gap-3 mt-8">
+                <Link to="/register" className="btn-primary !flex w-full sm:w-auto text-base py-3 px-6 justify-center">
                   Get Started <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
                   to="/login"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-gray-600 text-white hover:border-gray-400 transition-colors text-base font-medium"
+                  className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 rounded-lg border border-gray-600 text-white hover:border-gray-400 transition-colors text-base font-medium"
                 >
                   Officer Login
                 </Link>
