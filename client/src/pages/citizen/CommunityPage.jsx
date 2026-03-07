@@ -273,7 +273,6 @@ const CommunityPage = () => {
     setLoading(true);
     try {
       const res = await getIssues({
-        area: user?.area,
         issueType: typeFilter || undefined,
         status: statusFilter || undefined,
         search: search || undefined,
@@ -287,7 +286,7 @@ const CommunityPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [user?.area, typeFilter, statusFilter, search, page]);
+  }, [typeFilter, statusFilter, search, page]);
 
   useEffect(() => { fetchIssues(); }, [fetchIssues]);
 

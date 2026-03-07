@@ -183,6 +183,13 @@ const assignIssue = async (req, res, next) => {
     if (!worker.isAvailable) {
       return res.status(400).json({ success: false, message: `Worker "${worker.name}" is not available.` });
     }
+    // Enforce: worker must belong to the same city as the issue
+    if (worker.area.toLowerCase() !== issue.area.toLowerCase()) {
+      return res.status(400).json({
+        success: false,
+        message: `Worker "${worker.name}" is from ${worker.area} but this issue is in ${issue.area}. Only workers from ${issue.area} can be assigned.`,
+      });
+    }
 
     issue.assignedTo = workerId;
     issue.status = 'assigned';
@@ -301,7 +308,11 @@ const verifyResolution = async (req, res, next) => {
 // @access  Private (Officer)
 const getWorkers = async (req, res, next) => {
   try {
-    const workers = await User.find({ role: 'worker' }).select('-password');
+    const workerQuery = { role: 'worker' };
+    if (req.query.area) {
+      workerQuery.area = { $regex: req.query.area, $options: 'i' };
+    }
+    const workers = await User.find(workerQuery).select('-password');
     const workersWithStats = await Promise.all(
       workers.map(async (w) => {
         const totalAssigned = await Issue.countDocuments({ assignedTo: w._id });

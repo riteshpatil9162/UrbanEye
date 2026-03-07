@@ -41,7 +41,15 @@ const OfficerIssuesPage = () => {
   };
 
   useEffect(() => { fetchIssues(); }, [filters, page]);
-  useEffect(() => { getWorkers().then((r) => setWorkers(r.data.workers)).catch(() => {}); }, []);
+
+  // When the assign modal opens, fetch only workers from the same city as the issue
+  useEffect(() => {
+    if (!assignModal) return;
+    setWorkers([]);
+    getWorkers({ area: assignModal.area })
+      .then((r) => setWorkers(r.data.workers))
+      .catch(() => toast.error('Failed to load workers for this area.'));
+  }, [assignModal]);
 
   // Open issue detail modal — fetches full details from server
   const openDetail = async (issueId) => {
@@ -470,7 +478,7 @@ const OfficerIssuesPage = () => {
             </p>
 
             {workers.filter((w) => w.isAvailable).length === 0 ? (
-              <p className="text-sm text-amber-600">No available workers at the moment.</p>
+              <p className="text-sm text-amber-600">No available workers in <strong>{assignModal.area}</strong> at the moment.</p>
             ) : (
               <div className="space-y-2 max-h-64 overflow-y-auto">
                 {workers.filter((w) => w.isAvailable).map((worker) => (

@@ -149,10 +149,7 @@ const getIssues = async (req, res, next) => {
       ];
     }
 
-    // Citizens can only see issues in their area
-    if (req.user.role === 'citizen') {
-      query.area = { $regex: req.user.area, $options: 'i' };
-    }
+    // Citizens see ALL cities' issues in the community feed (no area restriction)
 
     const total = await Issue.countDocuments(query);
     const issues = await Issue.find(query)
