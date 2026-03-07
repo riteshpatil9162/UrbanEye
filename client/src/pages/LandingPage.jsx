@@ -83,6 +83,7 @@ const LandingPage = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
+              className="text-center lg:text-left"
             >
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-600/20 border border-primary-500/30 text-primary-300 text-xs font-medium mb-6">
                 <Zap className="w-3.5 h-3.5" />
@@ -93,11 +94,11 @@ const LandingPage = () => {
                 <br />
                 <span className="text-primary-400">Resolve.</span>
               </h1>
-              <p className="mt-5 text-lg text-gray-300 max-w-lg leading-relaxed">
+              <p className="mt-5 text-lg text-gray-300 max-w-lg leading-relaxed mx-auto lg:mx-0">
                 UrbanEye empowers citizens to report municipal issues, enables officers to manage them efficiently, and uses AI to ensure transparent resolution.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 mt-8">
-                <Link to="/register" className="btn-primary text-base py-3 px-6">
+              <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-3 mt-8">
+                <Link to="/register" className="btn-primary text-base py-3 px-6 justify-center">
                   Get Started <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
@@ -107,7 +108,7 @@ const LandingPage = () => {
                   Officer Login
                 </Link>
               </div>
-              <div className="flex items-center gap-6 mt-8">
+              <div className="flex items-center justify-center lg:justify-start gap-6 mt-8">
                 {[
                   { label: 'No Credit Card' },
                   { label: 'Free for Citizens' },
