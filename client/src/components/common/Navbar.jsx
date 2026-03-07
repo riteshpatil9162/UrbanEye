@@ -144,8 +144,8 @@ const Navbar = () => {
           >
             {!user ? (
               <>
-                <Link to="/login" className="btn-secondary w-full justify-center" onClick={() => setMobileOpen(false)}>Login</Link>
-                <Link to="/register" className="btn-primary w-full justify-center" onClick={() => setMobileOpen(false)}>Get Started</Link>
+                <Link to="/login" className="btn-secondary !flex w-full justify-center" onClick={() => setMobileOpen(false)}>Login</Link>
+                <Link to="/register" className="btn-primary !flex w-full justify-center" onClick={() => setMobileOpen(false)}>Get Started</Link>
               </>
             ) : (
               <>

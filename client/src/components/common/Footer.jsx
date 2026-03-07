@@ -58,15 +58,15 @@ const Footer = () => {
             <ul className="space-y-2.5">
               <li className="flex items-center gap-2 text-sm">
                 <Mail className="w-4 h-4 text-primary-400 flex-shrink-0" />
-                support@urbaneye.in
+                urban.ai@gmail.com
               </li>
               <li className="flex items-center gap-2 text-sm">
                 <Phone className="w-4 h-4 text-primary-400 flex-shrink-0" />
-                1800-URBAN-EYE
+                9876543210
               </li>
               <li className="flex items-center gap-2 text-sm">
                 <MapPin className="w-4 h-4 text-primary-400 flex-shrink-0" />
-                Pune, Maharashtra
+                Kolhapur, Maharashtra
               </li>
             </ul>
           </div>
