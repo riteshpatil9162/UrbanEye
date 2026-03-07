@@ -21,29 +21,42 @@ const analyticsRoutes = require('./routes/analyticsRoutes');
 
 connectDB();
 
+// ── Allowed origins ───────────────────────────────────────────────────────────
+// Covers: local dev, LAN (smartphone on same WiFi), and production Vercel URL.
+const ALLOWED_ORIGINS = [
+  'http://localhost:5173',
+  'http://172.30.104.184:5173',
+  'https://urban-eye-phi.vercel.app',
+  process.env.CLIENT_URL,                   // set on Render dashboard
+  /^https:\/\/.*\.vercel\.app$/,            // all Vercel preview deployments
+  /^http:\/\/192\.168\.\d+\.\d+:\d+$/,     // LAN 192.168.x.x
+  /^http:\/\/172\.\d+\.\d+\.\d+:\d+$/,     // LAN 172.x.x.x
+  /^http:\/\/10\.\d+\.\d+\.\d+:\d+$/,      // LAN 10.x.x.x
+].filter(Boolean);
+
+const isOriginAllowed = (origin) => {
+  if (!origin) return true; // no-origin requests: Postman, curl, native mobile apps
+  return ALLOWED_ORIGINS.some((o) =>
+    typeof o === 'string' ? o === origin : o.test(origin)
+  );
+};
+
+const corsOptions = {
+  origin: (origin, callback) =>
+    callback(null, isOriginAllowed(origin) ? (origin || true) : false),
+  credentials: true,
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 const app = express();
 const httpServer = createServer(app);
 
 // Socket.io setup
 const io = new Server(httpServer, {
   cors: {
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-      const allowed = [
-        process.env.CLIENT_URL || 'http://localhost:5173',
-        'http://localhost:5173',
-        'http://172.30.104.184:5173',
-        /^http:\/\/192\.168\.\d+\.\d+:\d+$/,
-        /^http:\/\/172\.\d+\.\d+\.\d+:\d+$/,
-        /^http:\/\/10\.\d+\.\d+\.\d+:\d+$/,
-      ];
-      const ok = allowed.some((o) =>
-        typeof o === 'string' ? o === origin : o.test(origin)
-      );
-      callback(null, ok ? origin : false);
-    },
+    ...corsOptions,
     methods: ['GET', 'POST'],
-    credentials: true,
   },
 });
 
@@ -70,27 +83,7 @@ io.on('connection', (socket) => {
 
 // Security middleware
 app.use(helmet({ crossOriginResourcePolicy: false }));
-
-const allowedOrigins = [
-  process.env.CLIENT_URL || 'http://localhost:5173',
-  'http://localhost:5173',
-  'http://172.30.104.184:5173',
-  /^http:\/\/192\.168\.\d+\.\d+:\d+$/,
-  /^http:\/\/172\.\d+\.\d+\.\d+:\d+$/,
-  /^http:\/\/10\.\d+\.\d+\.\d+:\d+$/,
-];
-
-app.use(cors({
-  origin: (origin, callback) => {
-    // allow no-origin requests (mobile apps, curl, Postman)
-    if (!origin) return callback(null, true);
-    const allowed = allowedOrigins.some((o) =>
-      typeof o === 'string' ? o === origin : o.test(origin)
-    );
-    callback(null, allowed ? origin : false);
-  },
-  credentials: true,
-}));
+app.use(cors(corsOptions));
 
 // Rate limiting
 const limiter = rateLimit({
